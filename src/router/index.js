@@ -1,20 +1,55 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Home from '../views/Home.vue'
+import Tasks from '../views/distribution/Tasks.vue'
+import Sprints from '../views/sprint/Sprints.vue'
+import Tests from '../views/test/Tests.vue'
+import Login from '../views/Login.vue'
+import Dashboard from '../views/Dashboard.vue'
+import Roadmap from '../views/Roadmap.vue'
+import Chat from '../views/Chat.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'Home',
+    component: Home
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    path: '/tasks',
+    name: 'Tasks',
+    component: Tasks
+    // component: () => import('../views/Tasks.vue')
+  },
+  {
+    path: '/sprints',
+    name: 'Sprints',
+    component: Sprints
+  },
+  {
+    path: '/tests',
+    name: 'Tests',
+    component: Tests
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
+  },
+  {
+    path: '/roadmap',
+    name: 'Roadmap',
+    component: Roadmap
+  },
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: Chat
+  },
 ]
 
 const router = createRouter({
