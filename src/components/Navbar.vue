@@ -54,7 +54,7 @@
                 <router-link to="/">Meu Perfil</router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/">Sair</router-link>
+                <router-link to="/logout">Sair</router-link>
               </li>
             </ul>
           </div>

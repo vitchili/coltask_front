@@ -13,27 +13,53 @@
         <KanbanFilter />
       </div>
       <div class="card-body d-flex horizontal-queue">
-        <KanbanStep />
-        <KanbanStep />
-        <KanbanStep />
-        <KanbanStep />
-        <KanbanStep />
-        <KanbanStep />
+        <div v-for="(kanbanFase, index) in kanbanFases" :key="index">
+          <KanbanFase :kanbanFase="kanbanFase" :tasks="tasks"/>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import KanbanStep from '@/components/kanban/KanbanStep.vue';
+import KanbanFase from '@/components/kanban/KanbanFase.vue';
 import KanbanFilter from '@/components/kanban/KanbanFilter.vue';
+import axios from "axios";
 
 export default {
   name: "Kanban",
   components: {
-    KanbanStep,
+    KanbanFase,
     KanbanFilter
-  }
+  },
+  data(){
+    return {
+      token: localStorage.getItem('authToken'),
+      kanbanFases: null
+    };
+  },
+  props: {
+    tasks: {
+      type: Array,
+      required: false,
+    },
+  },
+  mounted() {
+    const config = {
+      headers: { Authorization: `Bearer ${this.token}` },
+    };
+
+    axios
+      .get(`${process.env.VUE_APP_API_DOMAIN}/fases`, config)
+      .then((response) => {
+        if (response) {
+          this.kanbanFases = response.data.data;
+        }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+  },
 };
 </script>
 

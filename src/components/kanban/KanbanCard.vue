@@ -1,31 +1,57 @@
 <template>
   <div class="content">
-    <div class="card mb-3 bg-light">
-      <div class="card-body p-3">
-        <div class="float-right mr-n2">
-          <label class="custom-control custom-checkbox">
-            <span class="custom-control-label fw-600">Teste aqui</span>
-          </label>
+    <router-link :to="`/task/${task.id}`">
+      <div class="card mb-3 bg-light">
+        <div class="card-body p-3">
+          <div class="float-right mr-n2">
+            <label class="custom-control custom-checkbox">
+              <span class="custom-control-label fw-500 fs-13">#{{task.id}} - </span>
+              <span class="custom-control-label fw-500 fs-13">{{task.title}}</span>
+            </label>
+          </div>
+          <div>
+            <span class="text-body fs-12">
+              {{task.description.substring(0, 80)}}
+            </span>
+          </div>
+          <div class="d-block">
+            <span class="badge rounded-pill text-bg-secondary fs-9">Prazo: {{new Date(task.dead_line).getDate() + '/' + new Date(task.dead_line).getMonth() + '/' + new Date(task.dead_line).getFullYear()}}</span>
+          </div>
+          <div>
+              <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="user" class="avatar-img rounded-circle" style="width: 20px"/>
+              &nbsp;
+              <span class="text-body fs-12">&gt;</span>
+              &nbsp;
+              <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="user" class="avatar-img rounded-circle" style="width: 20px"/>
+          </div>
         </div>
-        <p class="text-body">
-          Curabitur ligula sapien, tincidunt non, euismod vitae, posuere
-          imperdiet, leo. Maecenas malesuada.
-        </p>
-        <a class="btn btn-outline-primary btn-sm" href="#">View</a>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
 <script>
 export default {
   name: "KanbanCard",
+  props: {
+    task: {
+      type: Object,
+      required: true,
+    }
+  }
 };
+
 </script>
 
 <style scoped>
-.fw-600 {
-    font-weight: 600 !important;
+a {
+  text-decoration: none;
+}
+.card-body {
+  padding: 10px !important;
+}
+.fw-500 {
+    font-weight: 550 !important;
     font-size: .9rem;
 }
 
@@ -39,6 +65,18 @@ export default {
 .card {
   position: relative;
   background-color: aqua;
+}
+
+.fs-13 {
+  font-size: 13px !important;
+}
+
+.fs-12 {
+  font-size: 12px !important;
+}
+
+.fs-9 {
+  font-size: 9px !important;
 }
 
 </style>

@@ -7,6 +7,11 @@ import Swal from "sweetalert2";
 
 export default {
     name: 'SweetAlertCancelTask',
+    props: {
+    taskId: {
+      required: true
+    }
+  },
     mounted(){
         Swal.fire({
         title: "Deseja cancelar a tarefa?",

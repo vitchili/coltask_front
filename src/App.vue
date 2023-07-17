@@ -1,5 +1,5 @@
 <template>
-  <Navbar :logo="logo_src" :alt="app_name"/>
+  <Navbar v-if="!isLoginPage" :logo="logo_src" :alt="app_name"/>
   <router-view/>
 </template>
 
@@ -12,7 +12,11 @@
 }
 
 body {
-  background-color: #D8EAEE;
+  background-image: url('@/../public/img/whiteAquarelleBackground.png');
+}
+
+.card {
+  background-color: rgba(255, 255, 255, .55) !important;
 }
 
 .content {
@@ -31,6 +35,11 @@ export default {
     return {
       logo_src: "/img/logo.png",
       app_name: "Coltask" 
+    }
+  },
+  computed: {
+    isLoginPage() {
+      return this.$route.path === '/login';
     }
   }
 }

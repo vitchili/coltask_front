@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex justify-content-between kanban-filter" id="teste">
+    <div class="d-flex justify-content-between kanban-filter">
       <div class="w-100 m-2 d-flex">
         <Multiselect
           v-model="projects.value"

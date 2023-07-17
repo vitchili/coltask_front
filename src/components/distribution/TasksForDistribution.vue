@@ -1,65 +1,61 @@
 <template>
   <div class="content">
     <div class="card">
-       <div class="card-header">
+      <div class="card-header">
         <div class="header-content">
           <span>Tarefas a distribuir</span>
-          <a data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">
-            <i class="fa-solid fa-circle-plus" style="color: #212529;"></i>
-          </a>
-        </div>
-      </div>
-      <div class="card-body" style="padding: 0">
-        <div class="d-flex justify-content-between">
-          <div class="input-group m-2">
-            <button
-              class="btn btn-sm btn-outline-secondary dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
+          <div>
+            <a
+              data-bs-toggle="collapse"
+              href="#collapse-task-filter"
+              role="button"
               aria-expanded="false"
+              aria-controls="collapse-task-filter"
             >
-              Filtro
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Id</a></li>
-              <li><a class="dropdown-item" href="#">Título</a></li>
-              <li><a class="dropdown-item" href="#">Criado por:</a></li>
-              <li><a class="dropdown-item" href="#">Data (dd-mm-YYYY):</a></li>
-            </ul>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              aria-label="Text input with dropdown button"
-            />
-            <button
-              class="btn btn-sm btn-outline-secondary"
-              type="button"
-              id="button-addon2"
-            >
-              Pesquisar
-            </button>
+              <i class="fa-solid fa-filter" style="color: #212529"></i>
+            </a>
+            <router-link :to="'/task/new'">
+              <i class="fa-solid fa-circle-plus" style="color: #212529"></i>
+            </router-link>
           </div>
         </div>
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
+      </div>
+      <div class="collapse multi-collapse" id="collapse-task-filter">
+        <TaskFilter />
+      </div>
+      <div class="card-body" style="padding: 5px">
+        <div v-for="(task, index) in tasks" :key="index">
+          <TaskCard :task="task"/>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import TaskCard from "@/components/distribution/TaskCard.vue";
+import TaskCard from "@/components/task/TaskCard.vue";
+import TaskFilter from "@/components/task/TaskFilter.vue";
 
 export default {
   name: "TasksForDistribution",
   components: {
     TaskCard,
+    TaskFilter,
   },
+  props: {
+    tasks: {
+      type: Array,
+      required: false,
+    },
+  }
 };
 </script>
 
 <style scoped>
+a {
+  margin: 0px 5px;
+}
+
 .card-body {
   position: relative;
   height: 300px;

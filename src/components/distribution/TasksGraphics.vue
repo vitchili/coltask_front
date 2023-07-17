@@ -7,13 +7,13 @@
           <div class="d-flex justify-content-between filter">
             <div class="w-100 m-2">
               <select class="form-select" aria-label="Default select example">
-                <option selected>Selecione o tipo de gráfico</option>
+                <option selected>Tarefas por mês</option>
               </select>
             </div>
           </div>
         </div>
         <div id="graphic-area">
-          <DynamicGraphic />
+          <DynamicGraphic :tasks="tasks"/>
         </div>
       </div>
     </div>
@@ -27,6 +27,12 @@ export default {
   name: "TaskGraphics",
   components : {
     DynamicGraphic,
+  },
+  props: {
+    tasks: {
+      type: Array,
+      required: false,
+    },
   }
 };
 </script>
