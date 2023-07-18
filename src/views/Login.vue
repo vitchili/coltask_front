@@ -96,6 +96,8 @@ export default {
       .then(response => {
         if (response.data) {
           localStorage.setItem('authToken', response.data.token);
+          localStorage.setItem('userId', response.data.id);
+          localStorage.setItem('userName', response.data.name);
           router.push({ name: 'Tasks'});
         }
       })

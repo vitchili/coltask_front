@@ -40,16 +40,14 @@
                   <div class="col-lg-6">
                     <div class="mb-3">
                       <label class="form-label">Solicitante</label>
-                      <select class="form-select form-select-sm">
-                        <option value="">Vitor Pimenta</option>
-                      </select>
+                      <input type="text" class="form-control form-control-sm" v-model="outside_requester">
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="mb-3">
                       <label class="form-label">Cliente</label>
                       <select class="form-select form-select-sm">
-                        <option value="">Cliente 1</option>
+                        <option v-for="(client, index) in clients" :key="index" :value="client.id">{{client.name}}</option>
                       </select>
                     </div>
                   </div>
@@ -89,7 +87,10 @@
                 <div class="col-lg-12">
                   <div class="mb-3">
                     <label class="form-label">Descrição</label>
-                    <textarea cols="30" rows="13" class="form-control form-control-sm"></textarea>
+                    <div>
+                      <Ckeditor />
+                    </div>
+                    <!-- <textarea cols="30" rows="13" class="form-control form-control-sm"></textarea> -->
                   </div>
                 </div>
               </div>
@@ -110,8 +111,8 @@
                 <div class="col-lg-12">
                   <div class="mb-3">
                     <label class="form-label">Setor</label>
-                    <select class="form-select form-select-sm">
-                      <option value="">Nenhum</option>
+                    <select class="form-select form-select-sm" @change="getUsersFromSpecificDirection($event)">
+                      <option v-for="(direction, index) in directions" :key="index" :value="direction.id">{{direction.name}}</option>
                     </select>
                   </div>
                 </div>
@@ -120,6 +121,7 @@
                     <label class="form-label">Responsável</label>
                     <select class="form-select form-select-sm">
                       <option value="">Nenhum</option>
+                      <option v-for="(sponsor, index) in sponsors" :key="index" :value="sponsor.id">{{sponsor.name}}</option>
                     </select>
                   </div>
                 </div>
@@ -158,7 +160,10 @@
                   <div class="mb-3">
                     <label class="form-label">Tipo de tarefa</label>
                     <select class="form-select form-select-sm">
-                      <option value="">Correção de bug</option>
+                      <option value="H">Ajuda</option>
+                      <option value="E" selected>Correção de Erro</option>
+                      <option value="F">Nova Feature</option>
+                      <option value="S">Serviço</option>
                     </select>
                   </div>
                 </div>
@@ -175,14 +180,6 @@
               </div>
               <div class="card-body" style="padding: 15px">
                 <ul class="list-group list-group-flush mx-n2">
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <label class="form-label">Notificação para o solicitante</label>
-                    </div>
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch">
-                    </div>
-                  </li>
                   <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                       <label class="form-label">Notificação para as cópias</label>
@@ -202,11 +199,71 @@
 </template>
 
 <script>
+import Ckeditor from '../../components/others/Ckeditor.vue';
+import axios from "axios";
+
 export default {
   name: "CreateTask",
   data() {
-    return {};
+    return {
+      token: localStorage.getItem('authToken'),
+      userId: localStorage.getItem('userId'),
+      outside_requester: localStorage.getItem('userName'),
+      requester: null,
+      clients: {},
+      directions: {},
+      sponsors: {},
+    };
   },
+  components: {
+    Ckeditor
+  },
+  methods: {
+    getUsersFromSpecificDirection(e){
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` },
+      };
+
+      axios
+      .post(`${process.env.VUE_APP_API_DOMAIN}/usersFilter`, {'direction_id': e.target.value}, config)
+      .then((response) => {
+        if (response) {
+          this.sponsors = response.data;
+        }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+
+    }
+  },
+  mounted(){
+    const config = {
+      headers: { Authorization: `Bearer ${this.token}` },
+    };
+    axios
+      .get(`${process.env.VUE_APP_API_DOMAIN}/clients`, config)
+      .then((response) => {
+        if (response) {
+          this.clients = response.data.data;
+        }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+
+      axios
+      .get(`${process.env.VUE_APP_API_DOMAIN}/directions`, config)
+      .then((response) => {
+        if (response) {
+          this.directions = response.data.data;
+        }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+
+  }
 };
 </script>
 
