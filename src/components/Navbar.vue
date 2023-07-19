@@ -22,7 +22,7 @@
           aria-labelledby="offcanvasDarkNavbarLabel"
         >
           <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <ul class="navbar-nav justify-content-end flex-grow-1">
               
               <hr/>
               <li class="nav-item">
@@ -105,5 +105,13 @@ a:hover {
 
 .itens-profile {
   padding: 0 0 5px 0 ;
+}
+
+.offcanvas {
+  width: 250px !important;
+}
+
+.offcanvas-body {
+  padding: 0px !important;
 }
 </style>

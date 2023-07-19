@@ -1,269 +1,452 @@
 <template>
   <div class="container-fluid">
-    <div class="container">
-      <!-- Title -->
-      <div
-        class="d-flex justify-content-between align-items-lg-center py-3 flex-column flex-lg-row"
-      >
-        <h2 class="h5 mb-3 mb-lg-0">
-          <a href="../../pages/admin/customers.html" class="text-muted"
-            ><i class="bi bi-arrow-left-square me-2"></i
-          ></a>
-          Criar tarefa
-        </h2>
-        <div class="hstack gap-3">
-          <router-link :to="'/tasks'">
-            <button class="btn btn-secondary btn-sm btn-icon-text">
-              <i class="bi bi-x"></i> <span class="text">Cancelar</span>
+    <form @submit.prevent="save">
+      <div class="container">
+        <!-- Title -->
+        <div
+          class="d-flex justify-content-between align-items-lg-center py-3 flex-column flex-lg-row"
+        >
+          <h2 class="h5 mb-3 mb-lg-0">
+            <a href="../../pages/admin/customers.html" class="text-muted"
+              ><i class="bi bi-arrow-left-square me-2"></i
+            ></a>
+            Criar tarefa
+          </h2>
+          <div class="hstack gap-3">
+            <router-link :to="'/tasks'">
+              <button class="btn btn-secondary btn-sm btn-icon-text">
+                <i class="bi bi-x"></i> <span class="text">Cancelar</span>
+              </button>
+            </router-link>
+            <button class="btn btn-primary btn-sm btn-icon-text" type="submit">
+              <i class="bi bi-save"></i> <span class="text">Salvar</span>
             </button>
-          </router-link>
-          <button class="btn btn-primary btn-sm btn-icon-text">
-            <i class="bi bi-save"></i> <span class="text">Salvar</span>
-          </button>
+          </div>
         </div>
-      </div>
 
-      <!-- Main content -->
-      <div class="row">
-        <!-- Left side -->
-        <div class="col-lg-8">
-          <!-- Envolved -->
-          <div class="card mb-4">
-            <div class="card">
-              <div class="card-header">
-                <div class="header-content">
-                  <span>Envolvidos</span>
+        <!-- Main content -->
+        <div class="row">
+          <!-- Left side -->
+          <div class="col-lg-8">
+            <!-- Envolved -->
+            <div class="card mb-4">
+              <div class="card">
+                <div class="card-header">
+                  <div class="header-content">
+                    <span>Envolvidos</span>
+                  </div>
                 </div>
-              </div>
-              <div class="card-body" style="padding: 15px">
-                <div class="row">
-                  <div class="col-lg-6">
-                    <div class="mb-3">
-                      <label class="form-label">Solicitante</label>
-                      <input type="text" class="form-control form-control-sm" v-model="outside_requester">
+                <div class="card-body" style="padding: 15px">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label class="form-label">Solicitante</label>
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          v-model="outside_requester"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label class="form-label">Cliente</label>
+                        <select
+                          class="form-select form-select-sm"
+                          v-model="client_id"
+                        >
+                          <option
+                            v-for="(client, index) in clients"
+                            :key="index"
+                            :value="client.id"
+                          >
+                            {{ client.name }}
+                          </option>
+                        </select>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label class="form-label">E-mails Cópia</label>
+                        <input
+                          type="email"
+                          class="form-control form-control-sm"
+                          placeholder="Separe os e-mails por ;"
+                          v-model="email_copy"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label class="form-label">Tipo de tarefa</label>
+                        <select
+                          class="form-select form-select-sm"
+                          v-model="type"
+                        >
+                          <option value="H">Ajuda</option>
+                          <option value="E" selected>Correção de Erro</option>
+                          <option value="F">Nova Feature</option>
+                          <option value="S">Serviço</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Task -->
+            <div class="card mb-4">
+              <div class="card">
+                <div class="card-header">
+                  <div class="header-content">
+                    <span>Dados da Tarefa</span>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 15px">
+                  <div class="col-lg-12">
                     <div class="mb-3">
-                      <label class="form-label">Cliente</label>
-                      <select class="form-select form-select-sm">
-                        <option v-for="(client, index) in clients" :key="index" :value="client.id">{{client.name}}</option>
+                      <label class="form-label">Título</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        v-model="title"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="mb-3">
+                      <label class="form-label">Descrição</label>
+                      <div>
+                        <Ckeditor />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Right side -->
+          <div class="col-lg-4">
+            <!-- Sponser -->
+            <div class="card mb-4">
+              <div class="card">
+                <div class="card-header">
+                  <div class="header-content">
+                    <span>Time de solução</span>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 15px">
+                  <div class="col-lg-12">
+                    <div class="mb-3">
+                      <label class="form-label">Setor</label>
+                      <select
+                        class="form-select form-select-sm"
+                        v-model="direction_id"
+                        @change="getUsersFromSpecificDirection($event)"
+                      >
+                        <option
+                          v-for="(direction, index) in directions"
+                          :key="index"
+                          :value="direction.id"
+                        >
+                          {{ direction.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="mb-3">
+                      <label class="form-label">Responsável</label>
+                      <select
+                        class="form-select form-select-sm"
+                        v-model="sponsor_id"
+                      >
+                        <option value="">Nenhum</option>
+                        <option
+                          v-for="(sponsor, index) in sponsors"
+                          :key="index"
+                          :value="sponsor.id"
+                        >
+                          {{ sponsor.name }}
+                        </option>
                       </select>
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-lg-6">
+              </div>
+            </div>
+            <!-- QA -->
+            <div class="card mb-4">
+              <div class="card">
+                <div class="card-header">
+                  <div class="header-content">
+                    <span>Análise de Qualidade</span>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 15px">
+                  <div class="col-lg-12">
                     <div class="mb-3">
-                      <label class="form-label">E-mails Cópia</label>
-                      <input type="email" class="form-control form-control-sm" placeholder="Separe os e-mails por ;">
+                      <select
+                        class="form-select form-select-sm"
+                        v-model="qa_id"
+                      >
+                        <option value="">Nenhum</option>
+                        <option
+                          v-for="(qa, index) in qas"
+                          :key="index"
+                          :value="qa.id"
+                        >
+                          {{ qa.name }}
+                        </option>
+                      </select>
                     </div>
                   </div>
-                  <div class="col-lg-6">
+                </div>
+              </div>
+            </div>
+            <!-- Category -->
+            <div class="card mb-4">
+              <div class="card">
+                <div class="card-header">
+                  <div class="header-content">
+                    <span>Prazos</span>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 15px">
+                  <div class="col-lg-12">
                     <div class="mb-3">
-                      <label class="form-label">Prazo</label>
-                      <input type="datetime-local" class="form-control form-control-sm">
+                      <label class="form-label">Data limite</label>
+                      <input
+                        type="datetime-local"
+                        class="form-control form-control-sm"
+                        v-model="dead_line"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Prioridade</label>
+                      <select
+                        class="form-select form-select-sm"
+                        v-model="priority_id"
+                      >
+                        <option
+                          v-for="(priority, index) in priorities"
+                          :key="index"
+                          :value="priority.id"
+                        >
+                          {{ priority.name }}
+                        </option>
+                      </select>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- Task -->
-          <div class="card mb-4">
-            <div class="card">
-              <div class="card-header">
-                <div class="header-content">
-                  <span>Dados da Tarefa</span>
-                </div>
-              </div>
-              <div class="card-body" style="padding: 15px">
-                <div class="col-lg-12">
-                  <div class="mb-3">
-                    <label class="form-label">Título</label>
-                    <input type="text" class="form-control form-control-sm">
+            <!-- Notification settings -->
+            <div class="card mb-4">
+              <div class="card">
+                <div class="card-header">
+                  <div class="header-content">
+                    <span>Notificações por e-mail a cada etapa</span>
                   </div>
                 </div>
-                <div class="col-lg-12">
-                  <div class="mb-3">
-                    <label class="form-label">Descrição</label>
-                    <div>
-                      <Ckeditor />
-                    </div>
-                    <!-- <textarea cols="30" rows="13" class="form-control form-control-sm"></textarea> -->
-                  </div>
+                <div class="card-body" style="padding: 15px">
+                  <ul class="list-group list-group-flush mx-n2">
+                    <li
+                      class="list-group-item px-0 d-flex justify-content-between align-items-start"
+                    >
+                      <div class="ms-2 me-auto">
+                        <label class="form-label"
+                          >Notificação para as cópias</label
+                        >
+                      </div>
+                      <div class="form-check form-switch">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          v-model="notif_email_copies"
+                        />
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Right side -->
-        <div class="col-lg-4">
-          <!-- Sponser -->
-          <div class="card mb-4">
-            <div class="card">
-              <div class="card-header">
-                <div class="header-content">
-                  <span>Time de solução</span>
-                </div>
-              </div>
-              <div class="card-body" style="padding: 15px">
-                <div class="col-lg-12">
-                  <div class="mb-3">
-                    <label class="form-label">Setor</label>
-                    <select class="form-select form-select-sm" @change="getUsersFromSpecificDirection($event)">
-                      <option v-for="(direction, index) in directions" :key="index" :value="direction.id">{{direction.name}}</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="mb-3">
-                    <label class="form-label">Responsável</label>
-                    <select class="form-select form-select-sm">
-                      <option value="">Nenhum</option>
-                      <option v-for="(sponsor, index) in sponsors" :key="index" :value="sponsor.id">{{sponsor.name}}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- QA -->
-          <div class="card mb-4">
-            <div class="card">
-              <div class="card-header">
-                <div class="header-content">
-                  <span>Análise de Qualidade</span>
-                </div>
-              </div>
-              <div class="card-body" style="padding: 15px">
-                <div class="col-lg-12">
-                  <div class="mb-3">
-                    <select class="form-select form-select-sm">
-                      <option value="">Nenhum</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Category -->
-          <div class="card mb-4">
-            <div class="card">
-              <div class="card-header">
-                <div class="header-content">
-                  <span>Categoria</span>
-                </div>
-              </div>
-              <div class="card-body" style="padding: 15px">
-                <div class="col-lg-12">
-                  <div class="mb-3">
-                    <label class="form-label">Tipo de tarefa</label>
-                    <select class="form-select form-select-sm">
-                      <option value="H">Ajuda</option>
-                      <option value="E" selected>Correção de Erro</option>
-                      <option value="F">Nova Feature</option>
-                      <option value="S">Serviço</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Notification settings -->
-          <div class="card mb-4">
-            <div class="card">
-              <div class="card-header">
-                <div class="header-content">
-                  <span>Notificações por e-mail a cada etapa</span>
-                </div>
-              </div>
-              <div class="card-body" style="padding: 15px">
-                <ul class="list-group list-group-flush mx-n2">
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <label class="form-label">Notificação para as cópias</label>
-                    </div>
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch">
-                    </div>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
+    <SweetAlertFormError
+      :key="countAlert"
+      v-if="showError"
+      :message="errorMessage"
+    />
   </div>
 </template>
 
 <script>
-import Ckeditor from '../../components/others/Ckeditor.vue';
+import Ckeditor from "../../components/others/Ckeditor.vue";
+import SweetAlertFormError from "../../components/alerts/SweetAlertFormError.vue";
+import router from "@/router";
 import axios from "axios";
 
 export default {
   name: "CreateTask",
   data() {
     return {
-      token: localStorage.getItem('authToken'),
-      userId: localStorage.getItem('userId'),
-      outside_requester: localStorage.getItem('userName'),
-      requester: null,
+      //Auth
+      token: localStorage.getItem("authToken"),
+
+      //Get data API
       clients: {},
       directions: {},
+      priorities: {},
       sponsors: {},
+      qas: {},
+
+      //Form data
+      outside_requester: localStorage.getItem("userName"),
+      client_id: null,
+      email_copy: null,
+      dead_line: null,
+      priority_id: null,
+      title: null,
+      description: "Teste descricao provisorio espera",
+      direction_id: null,
+      sponsor_id: null,
+      qa_id: null,
+      type: null,
+      notif_email_copies: null,
+
+      //Form Data Error
+      errorMessage: "",
+      showError: false,
+      countAlert: 0,
     };
   },
   components: {
-    Ckeditor
+    Ckeditor,
+    SweetAlertFormError,
   },
   methods: {
-    getUsersFromSpecificDirection(e){
-      const config = {
+    getHeaders() {
+      return {
         headers: { Authorization: `Bearer ${this.token}` },
       };
+    },
 
+    save() {
+      var data = {
+        outside_requester: this.outside_requester,
+        client_id: this.client_id,
+        email_copy: this.email_copy,
+        dead_line: this.dead_line,
+        title: this.title,
+        description: this.description,
+        direction_id: this.direction_id,
+        priority_id: this.priority_id,
+        sponsor_id: this.sponsor_id,
+        qa_id: this.qa_id,
+        type: this.type,
+        notif_email_copies: this.notif_email_copies,
+      };
+
+      //Save data and create task
       axios
-      .post(`${process.env.VUE_APP_API_DOMAIN}/usersFilter`, {'direction_id': e.target.value}, config)
-      .then((response) => {
-        if (response) {
-          this.sponsors = response.data;
-        }
-      })
-      .catch((error) => {
-          console.log(error);
-      });
+        .post(`${process.env.VUE_APP_API_DOMAIN}/task`, data, this.getHeaders())
+        .then((response) => {
+          if (response) {
+            console.log(response);
+            router.push({ name: "Tasks" });
+          }
+        })
+        .catch((error) => {
+          let data = error.response.data.errors;
+          let strError = "";
+          Object.keys(data).forEach(function (key) {
+            strError += data[key] + "<br/>";
+          });
 
-    }
+          this.errorMessage = strError;
+          this.showError = true;
+          this.countAlert++;
+        });
+    },
+
+    getUsersFromSpecificDirection(e) {
+      //Get users from this direction
+      axios
+        .post(
+          `${process.env.VUE_APP_API_DOMAIN}/usersFilter`,
+          { direction_id: e.target.value },
+          this.getHeaders()
+        )
+        .then((response) => {
+          if (response) {
+            this.sponsors = response.data;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
-  mounted(){
-    const config = {
-      headers: { Authorization: `Bearer ${this.token}` },
-    };
+
+  mounted() {
+    //Get Clients
     axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/clients`, config)
+      .get(`${process.env.VUE_APP_API_DOMAIN}/clients`, this.getHeaders())
       .then((response) => {
         if (response) {
           this.clients = response.data.data;
         }
       })
       .catch((error) => {
-          console.log(error);
+        console.log(error);
       });
 
-      axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/directions`, config)
+    //Get Directions
+    axios
+      .get(`${process.env.VUE_APP_API_DOMAIN}/directions`, this.getHeaders())
       .then((response) => {
         if (response) {
           this.directions = response.data.data;
         }
       })
       .catch((error) => {
-          console.log(error);
+        console.log(error);
       });
 
-  }
+    //Get Priorities
+    axios
+      .get(`${process.env.VUE_APP_API_DOMAIN}/priorities`, this.getHeaders())
+      .then((response) => {
+        if (response) {
+          this.priorities = response.data.data;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    //Get users from this direction
+    axios
+      .post(
+        `${process.env.VUE_APP_API_DOMAIN}/usersFilter`,
+        { direction_id: 2 },
+        this.getHeaders()
+      )
+      .then((response) => {
+        if (response) {
+          this.qas = response.data;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
 };
 </script>
 
@@ -287,7 +470,7 @@ export default {
   -webkit-box-flex: 1;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1.5rem !important;
 }
 
 .card-header {
@@ -296,8 +479,6 @@ export default {
 }
 
 label {
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
-
-
 </style>
