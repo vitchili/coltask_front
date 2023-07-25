@@ -22,7 +22,7 @@
               class="fa-solid fa-paper-plane fa-lg card-options"
               style="color: #13c9ef"
             ></i>
-            <router-link :to="`/task/update`">
+            <router-link :to="`/task/edit/${this.task.id}`">
               <i
                 class="fa-solid fa-pen-to-square fa-lg card-options"
                 style="color: #ffbb00"

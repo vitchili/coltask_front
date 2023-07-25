@@ -5,6 +5,7 @@
         <router-link to="/" id="logo">
           <img :src="logo" :alt="alt" id="logo-img" />
         </router-link>
+        <NotificationBell />
         <button
           class="navbar-toggler"
           type="button"
@@ -65,8 +66,12 @@
 </template>
 
 <script>
+import NotificationBell from '@/components/others/NotificationBell.vue';
 export default {
   name: "Navbar",
+  components: {
+    NotificationBell
+  },
   props: ["logo", "alt"],
 };
 </script>
