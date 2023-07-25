@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Tasks from '../views/distribution/Tasks.vue'
 import CreateTask from '../views/distribution/CreateTask.vue'
+import EditTask from '../views/task/EditTask.vue'
 import Sprints from '../views/sprint/Sprints.vue'
 import Tests from '../views/test/Tests.vue'
 import Login from '../views/Login.vue'
@@ -31,6 +32,14 @@ const routes = [
     path: '/task/new',
     name: 'CreateTask',
     component: CreateTask,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/task/edit/:id',
+    name: 'EditTask',
+    component: EditTask,
     meta: {
       requiresAuth: true
     }

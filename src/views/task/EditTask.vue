@@ -10,7 +10,7 @@
             <a href="../../pages/admin/customers.html" class="text-muted"
               ><i class="bi bi-arrow-left-square me-2"></i
             ></a>
-            Criar tarefa
+            Editar tarefa
           </h2>
           <div class="hstack gap-3">
             <router-link :to="'/tasks'">
@@ -55,7 +55,7 @@
                           class="form-select form-select-sm"
                           v-model="client_id"
                         >
-                          <option value="" selected>Selecione o cliente</option>
+                          <option selected disabled>{{client_name}}</option>
                           <option
                             v-for="(client, index) in clients"
                             :key="index"
@@ -86,8 +86,9 @@
                           class="form-select form-select-sm"
                           v-model="type"
                         >
+                          <option selected disabled>{{this.type_name}}</option>
                           <option value="H">Ajuda</option>
-                          <option value="E" selected>Correção de Erro</option>
+                          <option value="E">Correção de Erro</option>
                           <option value="F">Nova Feature</option>
                           <option value="S">Serviço</option>
                         </select>
@@ -120,7 +121,7 @@
                     <div class="mb-3">
                       <label class="form-label">Descrição</label>
                       <div>
-                        <CreateCkeditor @get-data-editor="getContentEditor"/>
+                        <EditCkeditor @get-data-editor="getContentEditor" :task="this.task"/>
                       </div>
                     </div>
                   </div>
@@ -147,7 +148,7 @@
                         v-model="direction_id"
                         @change="getUsersFromSpecificDirection($event)"
                       >
-                        <option value="" selected>Selecione o setor</option>
+                        <option selected disabled>{{this.direction_name}}</option>
                         <option
                           v-for="(direction, index) in directions"
                           :key="index"
@@ -162,18 +163,19 @@
                     <div class="mb-3">
                       <label class="form-label">Responsável</label>
                       <select
-                        class="form-select form-select-sm"
-                        v-model="sponsor_id"
-                      >
-                        <option value="">Nenhum</option>
-                        <option
-                          v-for="(sponsor, index) in sponsors"
-                          :key="index"
-                          :value="sponsor.id"
+                          class="form-select form-select-sm"
+                          v-model="sponsor_id"
                         >
-                          {{ sponsor.name }}
-                        </option>
-                      </select>
+                          <option value="">Nenhum</option>
+                          <option :value="sponsor_id">{{sponsor_name}}</option>
+                          <option
+                            v-for="(sponsor, index) in sponsors"
+                            :key="index"
+                            :value="sponsor.id"
+                          >
+                            {{ sponsor.name }}
+                          </option>
+                        </select>
                     </div>
                   </div>
                 </div>
@@ -192,9 +194,8 @@
                     <div class="mb-3">
                       <select
                         class="form-select form-select-sm"
-                        v-model="qa_id"
                       >
-                        <option value="">Nenhum</option>
+                        <option selected disabled>{{this.qa_name}}</option>
                         <option
                           v-for="(qa, index) in qas"
                           :key="index"
@@ -232,7 +233,7 @@
                         class="form-select form-select-sm"
                         v-model="priority_id"
                       >
-                        <option value="" selected>Selecione a prioridade</option>
+                        <option selected disabled>{{this.priority_name}}</option>
                         <option
                           v-for="(priority, index) in priorities"
                           :key="index"
@@ -256,7 +257,7 @@
                 </div>
                 <div class="card-body" style="padding: 15px">
                   <ul class="list-group list-group-flush mx-n2">
-                   <li
+                    <li
                       class="list-group-item px-0 d-flex justify-content-between align-items-start"
                     >
                       <div class="ms-2 me-auto">
@@ -270,6 +271,7 @@
                           type="checkbox"
                           role="switch"
                           v-model="not_email_owner"
+                          :checked="not_email_owner"
                         />
                       </div>
                     </li>
@@ -287,6 +289,7 @@
                           type="checkbox"
                           role="switch"
                           v-model="not_email_copies"
+                          :checked="not_email_copies"
                         />
                       </div>
                     </li>
@@ -307,19 +310,20 @@
 </template>
 
 <script>
-import CreateCkeditor from "../../components/others/CreateCkeditor.vue";
+import EditCkeditor from "../../components/others/EditCkeditor.vue";
 import SweetAlertFormError from "../../components/alerts/SweetAlertFormError.vue";
 import router from "@/router";
 import axios from "axios";
 
 export default {
-  name: "CreateTask",
+  name: "EditTask",
   data() {
     return {
       //Auth
       token: localStorage.getItem("authToken"),
 
       //Get data API
+      task: {},
       clients: {},
       directions: {},
       priorities: {},
@@ -329,16 +333,22 @@ export default {
       //Form data
       outside_requester: localStorage.getItem("userName"),
       client_id: '',
+      client_name: '',
       email_copy: null,
       dead_line: null,
       priority_id: '',
+      priority_name: '',
+      direction_id: '',
+      direction_name: '',
       title: '',
       description: '',
-      direction_id: '',
       sponsor_id: '',
+      sponsor_name: '',
       qa_id: '',
-      type: 'E',
-      not_email_owner: 0,
+      qa_name: '',
+      type: '',
+      type_name: '',
+      not_email_owner: 'checked',
       not_email_copies: 0,
 
       //Form Data Error
@@ -348,7 +358,7 @@ export default {
     };
   },
   components: {
-    CreateCkeditor,
+    EditCkeditor,
     SweetAlertFormError,
   },
   methods: {
@@ -371,13 +381,12 @@ export default {
         sponsor_id: this.sponsor_id,
         qa_id: this.qa_id,
         type: this.type,
-        not_email_owner: this.not_email_owner,
-        not_email_copies: this.not_email_copies,
+        notif_email_copies: this.notif_email_copies,
       };
 
       //Save data and create task
       axios
-        .post(`${process.env.VUE_APP_API_DOMAIN}/task`, data, this.getHeaders())
+        .put(`${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}`, data, this.getHeaders())
         .then((response) => {
           if (response) {
             console.log(response);
@@ -419,8 +428,38 @@ export default {
       this.description = e;
     }
   },
-
   mounted() {
+    //Get this task
+    axios
+      .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.$route.params.id}`, this.getHeaders())
+      .then((response) => {
+        if (response) {
+          this.task = response.data.data;
+          this.outside_requester = this.task.outside_requester;
+          this.client_id = this.task.client.id;
+          this.client_name = this.task.client.name;
+          this.email_copy = this.task.email_copy;
+          this.type = this.task.type.id;
+          this.type_name = this.task.type.name;
+          this.title = this.task.title;
+          this.description = this.task.description;
+          this.dead_line = (this.task.dead_line).substring(0, 16);
+          this.priority_id = this.task.priority.id;
+          this.priority_name = this.task.priority.name;
+          this.direction_id = this.task.direction.id;
+          this.direction_name = this.task.direction.name;
+          this.sponsor_id = this.task.sponsor.id ? this.task.sponsor.id : '';
+          this.sponsor_name = this.task.sponsor.name != null ? this.task.sponsor.name : "Nenhum" ;
+          this.qa_id = this.task.qa.id;
+          this.qa_name = this.task.qa.name != null ? this.task.qa.name : "Nenhum" ;
+          this.not_email_owner = this.task.not_email_owner;
+          this.not_email_copies = this.task.not_email_copies;
+        }
+      })  
+      .catch((error) => {
+        console.log(error);
+      });
+
     //Get Clients
     axios
       .get(`${process.env.VUE_APP_API_DOMAIN}/clients`, this.getHeaders())
@@ -472,6 +511,8 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+
+
   },
 };
 </script>
