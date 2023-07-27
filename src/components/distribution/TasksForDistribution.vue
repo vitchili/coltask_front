@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <div class="header-content">
-          <span>Tarefas a distribuir</span>
+          <span class="general-title-card mt-1">Tarefas na fila</span>
           <div>
             <a
               data-bs-toggle="collapse"

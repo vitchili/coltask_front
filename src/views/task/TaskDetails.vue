@@ -1,5 +1,81 @@
 <template>
-  <div class="tasks">
-    <h1>This is an tasks page</h1>
+  <div class="content">
+    <div class="container" style="position: relative; margin: 0;">
+      <div class="row" >
+        <div class="col-9">
+          <TaskData :task="task"/>
+        </div>
+        <div class="col-3">
+          <TaskParticipants :task="task"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <TaskChanges :task="task"/>
+        </div>
+        <div class="col">
+          <TaskTests :task="task"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <TaskAdditional :task="task"/>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<script>
+import TaskData from '@/components/task/TaskData.vue';
+import TaskParticipants from '@/components/task/TaskParticipants.vue';
+import TaskChanges from "@/components/task/TaskChanges.vue";
+import TaskTests from "@/components/task/TaskTests.vue";
+import TaskAdditional from "@/components/task/TaskAdditional.vue";
+import axios from "axios";
+
+export default {
+  name: "TaskDetails",
+  data(){
+    return {
+      token: localStorage.getItem('authToken'),
+      task: null
+    };
+  },
+  components: {
+    TaskData,
+    TaskParticipants,
+    TaskChanges,
+    TaskTests,
+    TaskAdditional
+  },
+  mounted() {
+    const config = {
+      headers: { Authorization: `Bearer ${this.token}` },
+    };
+
+    axios
+      .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.$route.params.id}`, config)
+      .then((response) => {
+        if (response) {
+          this.task = response.data.data;
+        }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+  }
+};
+</script>
+
+<style scoped>
+.container {
+  max-width: 100%;
+  align-content: space-between;
+}
+
+.row {
+  margin: 20px 0;
+}
+
+</style>

@@ -2,7 +2,7 @@
   <div class="content">
     <nav class="navbar navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
-        <router-link to="/" id="logo">
+        <router-link to="/tasks" id="logo">
           <img :src="logo" :alt="alt" id="logo-img" />
         </router-link>
         <NotificationBell />
@@ -80,7 +80,7 @@ export default {
 <style scoped>
 
 nav {
-  position: relative;
+  position: fixed;
   height: 70px;
   align-content: center;
 }
