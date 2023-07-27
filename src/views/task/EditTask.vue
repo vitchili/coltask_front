@@ -33,7 +33,7 @@
               <div class="card">
                 <div class="card-header">
                   <div class="header-content">
-                    <span>Envolvidos</span>
+                    <span class="general-title-card">Envolvidos</span>
                   </div>
                 </div>
                 <div class="card-body" style="padding: 15px">
@@ -103,7 +103,7 @@
               <div class="card">
                 <div class="card-header">
                   <div class="header-content">
-                    <span>Dados da Tarefa</span>
+                    <span class="general-title-card">Dados da Tarefa</span>
                   </div>
                 </div>
                 <div class="card-body" style="padding: 15px">
@@ -136,7 +136,7 @@
               <div class="card">
                 <div class="card-header">
                   <div class="header-content">
-                    <span>Time de solução</span>
+                    <span class="general-title-card">Time de solução</span>
                   </div>
                 </div>
                 <div class="card-body" style="padding: 15px">
@@ -186,7 +186,7 @@
               <div class="card">
                 <div class="card-header">
                   <div class="header-content">
-                    <span>Análise de Qualidade</span>
+                    <span class="general-title-card">Análise de Qualidade</span>
                   </div>
                 </div>
                 <div class="card-body" style="padding: 15px">
@@ -214,7 +214,7 @@
               <div class="card">
                 <div class="card-header">
                   <div class="header-content">
-                    <span>Prazos</span>
+                    <span class="general-title-card">Prazos</span>
                   </div>
                 </div>
                 <div class="card-body" style="padding: 15px">

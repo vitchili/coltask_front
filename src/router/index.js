@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Tasks from '../views/distribution/Tasks.vue'
 import CreateTask from '../views/distribution/CreateTask.vue'
 import EditTask from '../views/task/EditTask.vue'
+import TaskDetails from '../views/task/TaskDetails.vue'
 import Sprints from '../views/sprint/Sprints.vue'
 import Tests from '../views/test/Tests.vue'
 import Login from '../views/Login.vue'
@@ -40,6 +41,14 @@ const routes = [
     path: '/task/edit/:id',
     name: 'EditTask',
     component: EditTask,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/task/:id',
+    name: 'ViewTask',
+    component: TaskDetails,
     meta: {
       requiresAuth: true
     }

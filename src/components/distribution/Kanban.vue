@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <div class="header-content">
-          <span>Kanban</span>
+          <span class="general-title-card mt-1">Kanban</span>
           <a data-bs-toggle="collapse" href="#collapse-kanban-filter" role="button" aria-expanded="false" aria-controls="collapse-kanban-filter">
             <i class="fa-solid fa-filter" style="color: #212529;"></i>
           </a>

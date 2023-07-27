@@ -1,7 +1,11 @@
 <template>
   <div class="content">
     <div class="card">
-      <h6 class="card-header">Gráfico de Tarefas</h6>
+      <div class="card-header">
+        <div class="header-content">
+          <span class="general-title-card">Gráficos da Tarefa</span>
+        </div>
+      </div>
       <div class="card-body" style="padding: 0;">
         <div>
           <div class="d-flex justify-content-between filter">
