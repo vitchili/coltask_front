@@ -3,50 +3,58 @@
     <div class="card" style="height: 350px;">
       <div class="card-header" style="background-color: #57D0DF; color: #fff;">
         <div class="header-content">
-          <span class="general-title-card">Informações</span>
+          <span class="general-title-card mt-1">Informações</span>
+           <div class="justify-content-end">
+            <router-link :to="`/task/edit/${this.$route.params.id}`">
+                <i
+                  class="fa-solid fa-pen-to-square"
+                  style="color: #fff"
+                ></i>
+              </router-link> 
+           </div>
         </div>
       </div>
-      <div class="card-body" style="max-height: 350px; overflow-y: scroll;">
+      <div class="card-body" style="max-height: 350px;">
           <div class="row">
             <div class="form-group">
               <label for="fullName">Solicitante: </label>
-              <span class="span-info">Cleiton Soares</span>
+              <span class="span-info" v-if="task">{{task.outside_requester}}</span>
             </div>
           </div>
           <div class="row">
             <div class="form-group">
               <label for="fullName">Cliente: </label>
-              <span class="span-info">Unifique Sistemas LTDA</span>
+              <span class="span-info" v-if="task">{{task.client.name}}</span>
             </div>
           </div>
           <div class="row">
             <div class="form-group">
               <label for="fullName">Responsável: </label>
-              <span class="span-info">Romário Senna</span>
+              <span class="span-info" v-if="task">{{task.sponsor.name}}</span>
             </div>
           </div>
           <div class="row">
             <div class="form-group">
               <label for="fullName">Tipo da tarefa: </label>
-              <span class="span-info">Correção de Bug</span>
+              <span class="span-info" v-if="task">{{task.type.name}}</span>
             </div>
           </div>
           <div class="row">
             <div class="form-group">
               <label for="fullName">Q.A.: </label>
-              <span class="span-info">Larissa Manoela</span>
+              <span class="span-info" v-if="task">{{task.qa.name}}</span>
             </div>
           </div>
           <div class="row">
             <div class="form-group">
               <label for="fullName">Data-limite: </label>
-              <span class="span-info">13/09/2023 18:00</span>
+              <span class="span-info" v-if="task">{{task.dead_line}}</span>
             </div>
           </div>
           <div class="row">
             <div class="form-group">
               <label for="fullName">Cópias do e-mail: </label>
-              <span class="span-info">soares.eu@gmail.com</span>
+              <span class="span-info" v-if="task">{{task.email_copy}}</span>
             </div>
           </div>
         </div>

@@ -14,6 +14,7 @@
 <script>
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import CKEditor from "@ckeditor/ckeditor5-vue";
+import Swal from "sweetalert2";
 
 export default {
   name: "app",
@@ -82,10 +83,8 @@ export default {
         reader.onload = (e) => {
           const imageSrc = e.target.result;
 
-            // Inserir a imagem no conteúdo do editor
-          if (fileExtension /*&& fileExtension.match(/(png|jpe?g|gif)$/i)*/) {
+          if (fileExtension) {
             editor.execute("imageInsert", { source: imageSrc });
-            // if(! fileExtension.match(/(png|jpe?g|gif)$/i)){
               let fileNotImg = document.getElementsByTagName("img");
               for (let i = 0; i < fileNotImg.length; i++) {
                 var srcNotImage = fileNotImg[i].getAttribute("src");
@@ -93,59 +92,76 @@ export default {
                   fileNotImg[i].style.display = "none";
                 }
               }
-            // }
           }
-
-          const spaceBetween = document.createElement("div");
-          spaceBetween.style.display = 'block';
-          attachmentsDiv.appendChild(spaceBetween);
+          
+          const envolvedDiv = document.createElement("div");
+          envolvedDiv.id = 'div_' + file.name;
+          envolvedDiv.style.position = 'relative';
+          envolvedDiv.style.margin = '10px';
+          envolvedDiv.style.cursor = 'pointer';
+          envolvedDiv.style.display = 'inline-flex';
+          attachmentsDiv.appendChild(envolvedDiv);
 
           const thumbnail = document.createElement("embed");
-          thumbnail.id = 'attachmentFileImg_' + file.name;
+          thumbnail.id = 'embed_' + file.name;
+          thumbnail.className = 'embeds';
           thumbnail.style.width = '150px';
           thumbnail.style.height = '150px';
-          thumbnail.className = 'file-thumbnail';
           thumbnail.style.margin = '5px';
           thumbnail.src = imageSrc;
-          attachmentsDiv.appendChild(thumbnail);
-          
-          const thumbnailSpan = document.createElement("span");
-          thumbnailSpan.id = 'attachmentFileSpan_' + file.name;
-          thumbnailSpan.innerText = 'anexo_' + file.name;
-          thumbnailSpan.className = "file-thumbnail";
-          thumbnailSpan.style.backgroundColor = "#f8f8f8"; 
-          attachmentsDiv.appendChild(thumbnailSpan);
+          thumbnail.className = 'file-thumbnail';
+          envolvedDiv.appendChild(thumbnail);
+
+          const thumbnailSpan = document.createElement("i");
+          thumbnailSpan.id = 'i_' + file.name;
+          thumbnailSpan.style.color = '#585858';
+          thumbnailSpan.className = "fa-solid";
+          thumbnailSpan.classList.add('fa-eye');
+          envolvedDiv.appendChild(thumbnailSpan);
           
           const redXAttachment = document.createElement("i");
-          redXAttachment.id = 'delete_' + 'anexo_' + file.name;
+          redXAttachment.id = 'delete_' + file.name;
           redXAttachment.className = 'fa-solid';
           redXAttachment.classList.add('fa-x');
           redXAttachment.classList.add('fa-2xs');
           redXAttachment.style.color = '#ff0000';
+          redXAttachment.style.cursor = 'pointer';
+          redXAttachment.style.position = 'relative';
+          redXAttachment.style.top = '-140px';
+          redXAttachment.style.left = '-5px';
           attachmentsDiv.appendChild(redXAttachment);
           
           redXAttachment.onclick = function() {
-            let fileToRemove = document.getElementById('attachmentFileSpan_' + file.name);
-            let redXfileToRemove = document.getElementById('delete_' + 'anexo_' + file.name);
-            let miniatureToRemove = document.getElementById('attachmentFileImg_' + file.name);
-            attachmentsDiv.removeChild(fileToRemove);
+            let divFileToRemove = document.getElementById('div_' + file.name);
+            let embedFileToRemove = document.getElementById('embed_' + file.name);
+            let eyeMiniatureToRemove = document.getElementById('i_' + file.name);
+            let redXfileToRemove = document.getElementById('delete_' + file.name);
+            envolvedDiv.removeChild(eyeMiniatureToRemove);
+            envolvedDiv.removeChild(embedFileToRemove);
             attachmentsDiv.removeChild(redXfileToRemove);
-            attachmentsDiv.removeChild(miniatureToRemove);
-
-            // const images = document.getElementsByTagName("img");
-            // for (let i = 0; i < images.length; i++) {
-              // var srcImage = images[i].getAttribute("src");
-              // if (srcImage && srcImage == imageSrc) {
-                // images[i].style.display = "none";
-              // }
-            // }
+            attachmentsDiv.removeChild(divFileToRemove);
+            this.countAttachments--;
 
           };
-          
-            
-          this.countAttachments++;
+          envolvedDiv.onclick = function(e) {
+            var element = envolvedDiv.getElementsByTagName("embed")[0];
+            var newThumbnail = document.createElement('embed');
+            newThumbnail.style.width = '100%'; 
+            newThumbnail.src = element.src;
+            if(element.src.substring(5, 10) == 'image'){
+              newThumbnail.style.maxWidth = '800px';
+              newThumbnail.style.height = element.height;
+            }else{
+              newThumbnail.style.height = '600px';
+            }
+            Swal.fire({
+              width: 900,
+              html: newThumbnail,
+              confirmButtonColor: "#56CEDD",
+            });
+          };
 
-          // console.dir(imageSrc);
+          this.countAttachments++;
 
         };
         reader.readAsDataURL(file);
