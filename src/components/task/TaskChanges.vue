@@ -21,7 +21,8 @@
             <input
               type="text"
               class="form-control form-control-sm"
-              v-model="title"
+              v-if="task"
+              :value="task.branch"
             />
           </div>
         </div>
@@ -50,11 +51,21 @@
 import CreateCkeditor from "@/components/others/CreateCkeditor.vue";
 export default {
   name: "TaskChanges",
+  data(){
+    return {
+      branch: '',
+    };
+  },
+  mounted(){
+    if(this.task){
+      this.branch = this.task.branch;
+    }
+  },
   components: {
     CreateCkeditor,
   },
   props: {
-    tasks: {
+    task: {
       type: Object,
       required: false,
     },

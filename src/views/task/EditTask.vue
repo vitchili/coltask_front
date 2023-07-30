@@ -13,7 +13,7 @@
             Editar tarefa
           </h2>
           <div class="hstack gap-3">
-            <router-link :to="'/tasks'">
+            <router-link :to="`/task/${task.id}`">
               <button class="btn btn-secondary btn-sm btn-icon-text">
                 <i class="bi bi-x"></i> <span class="text">Cancelar</span>
               </button>

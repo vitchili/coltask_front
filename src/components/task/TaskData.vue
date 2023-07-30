@@ -1,42 +1,47 @@
 <template>
-  <div class="content" style="max-height: 350px;">
-    <div class="card" style="max-height: 350px;">
+  <div class="content" style="max-height: 350px">
+    <div class="card" style="max-height: 350px">
       <div class="card-header">
         <div class="header-content">
-          <span class="general-title-card mt-1">Tarefa #553230</span>
-          <div>
-            <span class="badge rounded-pill ms-2 text-bg-danger">
-            Status: Em andamento  
+          <span class="general-title-card mt-1" v-if="task"
+            >Tarefa #{{ task.id }}</span
+          >
+          <div class="d-flex justify-content-end">
+            <span class="badge rounded-pill ms-2 text-bg-danger" v-if="task">
+              Status: {{ task.fase.name }}
             </span>
           </div>
         </div>
       </div>
-      <div class="card-body" style="max-height: 350px; overflow-y: scroll;">
+      <div class="card-body" style="max-height: 350px; overflow-y: scroll">
         <div class="row">
-           <div class="form-group">
-              <label for="fullName" class="title">Título</label>
-              <h5>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus facilis cumque aspernatur labore.</h5>
-            </div>
+          <div class="form-group">
+            <label for="fullName" class="title">Título</label>
+            <h5 v-if="task">{{ task.title }}</h5>
+          </div>
         </div>
         <div class="row">
-           <div class="form-group">
-              <label for="fullName" class="description">Descrição</label>
-              <p>Cinema Classics Movie Reviews</p>
-              <p>Review: Basketball Dog (2018)</p>
-              <p><i>4 out of 5 stars</i></p>
-              <p>From director <b>Vicki Fleming</b> comes the heartwarming tale of a boy named Pete (Trent Dugson) and his dog Rover (voiced by Brinson Lumblebrunt). You may think a boy and his dog learning the true value of friendship sounds familiar, but a big twist sets this flick apart: Rover plays basketball, and he's doggone good at it.</p>
-              <p>While it may not have been necessary to include all 150 minutes of Rover's championship game in real time, Basketball Dog will keep your interest for the entirety of its 4-hour runtime, and the end will have any dog lover in tears. If you love basketball or sports pets, this is the movie for you.</p>
-              <p>Find the full cast listing at the Basketball Dog website.</p>
-            </div>
+          <div class="form-group">
+            <label for="fullName" class="description">Descrição</label>
+            <div v-if="task" v-html="span(task.description)"></div>
+          </div>
+          <div id="attachmentsDiv">
+            <label class="description"
+              >Anexos:
+              <small v-show="countAttachments == 0"
+                >Nenhum arquivo anexado..</small
+              ></label
+            >
+          </div>
         </div>
       </div>
-      
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
   name: "TaskData",
@@ -44,6 +49,7 @@ export default {
   data() {
     return {
       token: localStorage.getItem("authToken"),
+      countAttachments: 0,
     };
   },
   props: {
@@ -52,19 +58,125 @@ export default {
       required: false,
     },
   },
-  mounted() {},
+  methods: {
+    span(description) {
+      return `<div> ${description} </div>`;
+    },
+
+    getHeaders() {
+      return {
+        headers: { Authorization: `Bearer ${this.token}` },
+      };
+    },
+  },
+  watch: {
+    'task.description': {
+      immediate: false,
+      handler(newDescription) {
+        if (this.editorData !== newDescription) {
+          axios
+            .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments`, this.getHeaders())
+            .then((response) => {
+              if (response) {
+                
+                this.attachmentFiles = response.data;
+                var type = [];
+                var thumbnail = [];
+                var envolvedDiv = [];
+                var thumbnailSpan = [];
+
+                for(let i=0; i<(this.attachmentFiles).length; i++ ){
+                  var attachmentsDiv = document.getElementById('attachmentsDiv');
+
+                  if((this.attachmentFiles)[i].extension == 'pdf'){
+                    type[i] = 'application/';
+                  }else{
+                    type[i] = 'image/';
+                  }
+                  
+                  envolvedDiv[i] = document.createElement("div");
+                  envolvedDiv[i].id = 'divAttachmentFileImg_' + (i);
+                  envolvedDiv[i].style.position = 'relative';
+                  envolvedDiv[i].style.margin = '10px';
+                  envolvedDiv[i].style.cursor = 'pointer';
+                  envolvedDiv[i].style.display = 'inline-flex';
+
+                  attachmentsDiv.appendChild(envolvedDiv[i]);
+
+                  thumbnail[i] = document.createElement("embed");
+                  thumbnail[i].id = 'attachmentFileImg_' + (i);
+                  thumbnail[i].style.width = '150px';
+                  thumbnail[i].style.height = '150px';
+                  thumbnail[i].style.margin = '5px';
+                  thumbnail[i].src = "data:" + type[i] + (this.attachmentFiles)[i].extension + ";base64,"+ (this.attachmentFiles)[i].file;
+                  thumbnail[i].className = 'file-thumbnail';
+                  envolvedDiv[i].appendChild(thumbnail[i]);
+
+                  thumbnailSpan[i] = document.createElement("i");
+                  thumbnailSpan[i].id = 'attachmentFileSpan_' + i;
+                  thumbnailSpan[i].style.color = '#585858';
+                  thumbnailSpan[i].className = "fa-solid";
+                  thumbnailSpan[i].classList.add('fa-eye');
+                  envolvedDiv[i].appendChild(thumbnailSpan[i]);
+
+                  this.countAttachments++;
+                }
+
+                var newThumbnail = [];
+
+                this.attachmentFiles.forEach(function (element, index) {
+                  envolvedDiv[index].onclick = function(e) {
+                    var element = envolvedDiv[index].getElementsByTagName("embed")[0];
+                    newThumbnail[index] = document.createElement('embed');
+                    newThumbnail[index].style.width = '100%'; // Define a largura para preencher o pop-up
+                    newThumbnail[index].src = element.src;
+
+                    if(element.src.substring(5, 10) == 'image'){
+                      newThumbnail[index].style.maxWidth = '800px'; // Altura ajustável proporcionalmente à largura
+                      newThumbnail[index].style.height = element.height; // Altura ajustável proporcionalmente à largura
+                    }else{
+                      newThumbnail[index].style.height = '600px';
+                    }
+
+                    Swal.fire({
+                      width: 900,
+                      html: newThumbnail[index],
+                      confirmButtonColor: "#56CEDD",
+                    });
+
+                    // var downloadLink = document.createElement('a');
+                    // downloadLink.href = thumbnail.src;
+                    // downloadLink.download = 'nome_do_arquivo.png'; // Substitua pelo nome do arquivo com a extensão desejada
+                    // downloadLink.click();
+                    // downloadLink.remove();
+                  };
+                });
+
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          this.editorData = newDescription;
+        }
+      },
+    },
+  },
+  mounted() {
+  },
 };
 </script>
 
 <style scoped>
-.title, .description {
+.title,
+.description {
   display: block;
-  border-bottom: .9px solid #efefef;
+  border-bottom: 0.9px solid #efefef;
   color: #aaaaaa;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 p {
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
 .content {
@@ -75,5 +187,6 @@ p {
   display: flex;
   justify-content: space-between;
 }
+
 </style>
 
