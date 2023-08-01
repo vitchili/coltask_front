@@ -1,6 +1,6 @@
 <template>
-  <div class="content" style="max-height: 350px">
-    <div class="card" style="max-height: 350px">
+  <div class="content" style="height: 350px">
+    <div class="card" style="height: 350px">
       <div class="card-header">
         <div class="header-content">
           <span class="general-title-card mt-1" v-if="task"
@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-      <div class="card-body" style="max-height: 350px; overflow-y: scroll">
+      <div class="card-body" style="height: 350px; overflow-y: scroll">
         <div class="row">
           <div class="form-group">
             <label for="fullName" class="title">Título</label>
@@ -75,7 +75,7 @@ export default {
       handler(newDescription) {
         if (this.editorData !== newDescription) {
           axios
-            .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments`, this.getHeaders())
+            .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments/attachments`, this.getHeaders())
             .then((response) => {
               if (response) {
                 

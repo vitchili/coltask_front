@@ -30,7 +30,7 @@
           <div class="mb-3">
             <label class="description">Modificação</label>
             <div>
-              <CreateCkeditor
+              <CreateTaskDescriptionCkeditor
                 @get-data-editor="getContentEditor"
                 :task="this.task"
               />
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import CreateCkeditor from "@/components/others/CreateCkeditor.vue";
+import CreateTaskDescriptionCkeditor from "@/components/others/CreateTaskDescriptionCkeditor.vue";
 export default {
   name: "TaskChanges",
   data(){
@@ -62,7 +62,7 @@ export default {
     }
   },
   components: {
-    CreateCkeditor,
+    CreateTaskDescriptionCkeditor,
   },
   props: {
     task: {

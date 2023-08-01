@@ -6,7 +6,7 @@
       @ready="onEditorReady"
     ></ckeditor>
     <div id="attachmentsDiv">
-        <label class="form-label">Anexos: <small v-show="countAttachments == 0">Nenhum arquivo anexado. Arraste e solte na descrição.</small></label>
+        <small style="font-size: 9pt;" v-show="countAttachments == 0">Nenhum arquivo anexado... Arraste e solte na descrição</small>
     </div>
   </div>
 </template>
@@ -140,8 +140,8 @@ export default {
             envolvedDiv.removeChild(embedFileToRemove);
             attachmentsDiv.removeChild(redXfileToRemove);
             attachmentsDiv.removeChild(divFileToRemove);
+            
             this.countAttachments--;
-
           };
           envolvedDiv.onclick = function(e) {
             var element = envolvedDiv.getElementsByTagName("embed")[0];
@@ -196,4 +196,5 @@ export default {
 label {
   font-size: 0.85rem;
 }
+
 </style>

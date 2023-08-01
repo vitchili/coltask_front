@@ -120,7 +120,7 @@
                     <div class="mb-3">
                       <label class="form-label">Descrição</label>
                       <div>
-                        <CreateCkeditor @get-data-editor="getContentEditor"/>
+                        <CreateTaskDescriptionCkeditor @get-data-editor="getContentEditor"/>
                       </div>
                     </div>
                   </div>
@@ -307,7 +307,7 @@
 </template>
 
 <script>
-import CreateCkeditor from "../../components/others/CreateCkeditor.vue";
+import CreateTaskDescriptionCkeditor from "../../components/others/CreateTaskDescriptionCkeditor.vue";
 import SweetAlertFormError from "../../components/alerts/SweetAlertFormError.vue";
 import router from "@/router";
 import axios from "axios";
@@ -348,7 +348,7 @@ export default {
     };
   },
   components: {
-    CreateCkeditor,
+    CreateTaskDescriptionCkeditor,
     SweetAlertFormError,
   },
   methods: {

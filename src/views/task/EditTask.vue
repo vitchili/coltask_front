@@ -121,7 +121,7 @@
                     <div class="mb-3">
                       <label class="form-label">Descrição</label>
                       <div>
-                        <EditCkeditor @get-data-editor="getContentEditor" :task="this.task"/>
+                        <EditTaskDescriptionCkeditor @get-data-editor="getContentEditor" :task="this.task"/>
                       </div>
                     </div>
                   </div>
@@ -310,7 +310,7 @@
 </template>
 
 <script>
-import EditCkeditor from "../../components/others/EditCkeditor.vue";
+import EditTaskDescriptionCkeditor from "../../components/others/EditTaskDescriptionCkeditor.vue";
 import SweetAlertFormError from "../../components/alerts/SweetAlertFormError.vue";
 import router from "@/router";
 import axios from "axios";
@@ -358,7 +358,7 @@ export default {
     };
   },
   components: {
-    EditCkeditor,
+    EditTaskDescriptionCkeditor,
     SweetAlertFormError,
   },
   methods: {
@@ -389,7 +389,6 @@ export default {
         .put(`${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}`, data, this.getHeaders())
         .then((response) => {
           if (response) {
-            console.log(response);
             router.push({ name: "Tasks" });
           }
         })
