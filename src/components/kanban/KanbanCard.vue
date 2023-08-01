@@ -5,14 +5,9 @@
         <div class="card-body p-3">
           <div class="float-right mr-n2">
             <label class="custom-control custom-checkbox">
-              <span class="custom-control-label fw-500 fs-13">#{{task.id}} - </span>
-              <span class="custom-control-label fw-500 fs-13">{{task.title}}</span>
+              <span class="custom-control-label fs-13">#{{task.id}} - </span>
+              <span class="custom-control-label fs-13">{{task.title}}</span>
             </label>
-          </div>
-          <div>
-            <span class="text-body fs-12">
-              {{task.description.substring(0, 80)}}
-            </span>
           </div>
           <div class="d-block">
             <span class="badge rounded-pill text-bg-secondary fs-9">Prazo: {{new Date(task.dead_line).getDate() + '/' + new Date(task.dead_line).getMonth() + '/' + new Date(task.dead_line).getFullYear()}}</span>
