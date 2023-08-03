@@ -208,7 +208,6 @@ export default {
 
       editor.model.document.on("change:data", () => {
         this.content = editor.getData();
-        console.log(this.content);
         this.content = this.content.replaceAll('"', "'");
         this.$emit("get-data-editor", this.content);
       });

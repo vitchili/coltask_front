@@ -10,9 +10,9 @@ export default {
     }
   },
   mounted(){
-      localStorage.removeItem('authToken');
       axios.post(`${process.env.VUE_APP_API_DOMAIN}/logout`, null, getAuthToken());
       router.push({ name: 'Login'});
+      this.$cookies.remove('token');
 
     }
 }

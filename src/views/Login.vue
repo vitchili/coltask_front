@@ -95,7 +95,7 @@ export default {
       axios.post(`${process.env.VUE_APP_API_DOMAIN}/login`, data)
       .then(response => {
         if (response.data) {
-          localStorage.setItem('authToken', response.data.token);
+          this.$cookies.set('token', response.data.token);
           localStorage.setItem('userId', response.data.id);
           localStorage.setItem('userName', response.data.name);
           localStorage.setItem('expires_at', response.data.expires_at);
