@@ -25,7 +25,7 @@ const routes = [
     name: 'Tasks',
     component: Tasks,
     meta: {
-      requiresAuth: false
+      requiresAuth: true
     }
   },
   {

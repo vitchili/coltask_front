@@ -1,8 +1,11 @@
 export default function authMiddleware(to, from, next) {
-    
-    if (to.meta.requiresAuth) {
-      const hasToken = getAuthToken();
-      if (hasToken) {
+  if (to.meta.requiresAuth) {
+      var token = $cookies.get('token');
+      const expiresAt = new Date(localStorage.getItem('expires_at'));
+      const expiresAtFormatted = expiresAt.toLocaleDateString();
+      const today = new Date();
+      const todaysDate = today.toLocaleDateString();
+      if (token && expiresAtFormatted > todaysDate) {
         next();
       } else {
         next({ name: 'Login' });
@@ -13,9 +16,10 @@ export default function authMiddleware(to, from, next) {
   }
 
 export function getAuthToken() {
-    if (typeof localStorage.getItem("authToken") != 'undefined') {
+    var token = $cookies.get('token');
+    if (typeof $cookies.get('token') != 'undefined') {
       return {
-        headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+        headers: { Authorization: `Bearer ${token}` },
       };
     }
   return null;
