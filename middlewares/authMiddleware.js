@@ -1,9 +1,8 @@
 export default function authMiddleware(to, from, next) {
     
     if (to.meta.requiresAuth) {
-      const isAuthenticated = localStorage.getItem('authToken');
-  
-      if (isAuthenticated) {
+      const hasToken = getAuthToken();
+      if (hasToken) {
         next();
       } else {
         next({ name: 'Login' });
@@ -12,3 +11,12 @@ export default function authMiddleware(to, from, next) {
       next();
     }
   }
+
+export function getAuthToken() {
+    if (typeof localStorage.getItem("authToken") != 'undefined') {
+      return {
+        headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+      };
+    }
+  return null;
+}

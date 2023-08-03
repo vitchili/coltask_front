@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 import Tasks from '../views/distribution/Tasks.vue'
 import CreateTask from '../views/distribution/CreateTask.vue'
 import EditTask from '../views/task/EditTask.vue'
@@ -26,7 +25,7 @@ const routes = [
     name: 'Tasks',
     component: Tasks,
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     }
   },
   {

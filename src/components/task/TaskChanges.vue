@@ -1,68 +1,148 @@
 <template>
   <div class="content">
-    <div class="card">
-      <div class="card-header">
-        <div class="header-content">
-          <span class="general-title-card mt-1">Modificações</span>
-          <div>
-            <router-link :to="'/task/new'">
-             <i
-              class="fa-solid fa-bars card-options"
-              style="color: #212529"
-              ></i>
-            </router-link>
-          </div>
-        </div>
-      </div>
-      <div class="card-body" style="padding: 15px">
-        <div class="col-lg-12">
-          <div class="mb-3">
-            <label class="title">Branch</label>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              v-if="task"
-              :value="task.branch"
-            />
-          </div>
-        </div>
-        <div class="col-lg-12">
-          <div class="mb-3">
-            <label class="description">Modificação</label>
+    <form @submit.prevent="save">
+      <div class="card">
+        <div class="card-header">
+          <div class="header-content">
+            <span class="general-title-card mt-1">Modificações</span>
             <div>
-              <CreateTaskDescriptionCkeditor
-                @get-data-editor="getContentEditor"
-                :task="this.task"
-              />
-            </div>
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-sm btn-icon-text" type="button" style="background-color: #57CFDE; color: #fff;">
-                <i class="bi bi-save"></i> <span class="text">Salvar</span>
-              </button>
+              <router-link :to="'/task/new'">
+                <i
+                  class="fa-solid fa-bars card-options"
+                  style="color: #212529"
+                ></i>
+              </router-link>
             </div>
           </div>
         </div>
+        <div class="card-body" style="padding: 15px">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label class="title">Branch local</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  v-if="task"
+                  v-model="branch"
+                />
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label class="title">Link do merge request</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  v-if="task"
+                  v-model="link_merge_request"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="description">Modificação</label>
+              <div>
+                <CreateTaskChangesCkeditor
+                  @get-data-editor="getContentEditor"
+                  :task="this.task"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button
+              class="btn btn-sm btn-icon-text"
+              type="submit"
+              style="background-color: #57cfde; color: #fff"
+            >
+              <i class="fa-solid fa-floppy-disk"></i>&nbsp;&nbsp;<span
+                class="text"
+                >Salvar</span
+              >
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+      <SweetAlertFormError
+        :key="countAlert"
+        v-if="showError"
+        :message="errorMessage"
+      />
+    </form>
   </div>
 </template>
 
 <script>
-import CreateTaskDescriptionCkeditor from "@/components/others/CreateTaskDescriptionCkeditor.vue";
+import axios from "axios";
+import SweetAlertFormError from "../../components/alerts/SweetAlertFormError.vue";
+import CreateTaskChangesCkeditor from "@/components/others/CreateTaskChangesCkeditor.vue";
+import { getAuthToken } from '../../../middlewares/authMiddleware'; 
+
 export default {
   name: "TaskChanges",
-  data(){
+  data() {
     return {
-      branch: '',
+      branch: "",
+      link_merge_request: "",
+      modification: "",
+
+      //Form Data Error
+      errorMessage: "",
+      showError: false,
+      countAlert: 0,
     };
   },
-  mounted(){
-    if(this.task){
-      this.branch = this.task.branch;
-    }
-  },
   components: {
-    CreateTaskDescriptionCkeditor,
+    CreateTaskChangesCkeditor,
+    SweetAlertFormError,
+  },
+  methods: {
+    getContentEditor(e) {
+      this.modification = e;
+    },
+    save() {
+      var data = {
+        branch: this.branch,
+        link_merge_request: this.link_merge_request,
+        modification: this.modification,
+      };
+
+      //Save data and create task
+      axios
+        .put(
+          `${process.env.VUE_APP_API_DOMAIN}/task/changes/${this.task.id}`,
+          data,
+          getAuthToken()
+        )
+        .then((response) => {
+          if (response) {
+            console.log("okay");
+          }
+        })
+        .catch((error) => {
+          let data = error.response.data.errors;
+          let strError = "";
+          Object.keys(data).forEach(function (key) {
+            strError += data[key] + "<br/>";
+          });
+
+          this.errorMessage = strError;
+          this.showError = true;
+          this.countAlert++;
+        });
+    },
+  },
+  watch: {
+    "task": {
+      immediate: false,
+      handler(task) {
+         this.branch = task.branch;
+        this.modification = task.modification;
+        this.link_merge_request = task.link_merge_request;
+      }
+    }
   },
   props: {
     task: {
@@ -74,11 +154,12 @@ export default {
 </script>
 
 <style scoped>
-.title, .description {
+.title,
+.description {
   display: block;
-  border-bottom: .9px solid #efefef;
+  border-bottom: 0.9px solid #efefef;
   color: #aaaaaa;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 a {

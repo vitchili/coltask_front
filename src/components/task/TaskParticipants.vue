@@ -65,14 +65,12 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "TaskParticipants",
   components: {},
   data() {
     return {
-      token: localStorage.getItem("authToken"),
+      
     };
   },
   props: {

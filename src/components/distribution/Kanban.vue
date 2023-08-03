@@ -25,6 +25,7 @@
 import KanbanFase from '@/components/kanban/KanbanFase.vue';
 import KanbanFilter from '@/components/kanban/KanbanFilter.vue';
 import axios from "axios";
+import { getAuthToken } from '../../../middlewares/authMiddleware'; 
 
 export default {
   name: "Kanban",
@@ -34,7 +35,6 @@ export default {
   },
   data(){
     return {
-      token: localStorage.getItem('authToken'),
       kanbanFases: null
     };
   },
@@ -45,12 +45,8 @@ export default {
     },
   },
   mounted() {
-    const config = {
-      headers: { Authorization: `Bearer ${this.token}` },
-    };
-
     axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/fases`, config)
+      .get(`${process.env.VUE_APP_API_DOMAIN}/fases`, getAuthToken())
       .then((response) => {
         if (response) {
           this.kanbanFases = response.data.data;

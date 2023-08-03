@@ -98,6 +98,7 @@ export default {
           localStorage.setItem('authToken', response.data.token);
           localStorage.setItem('userId', response.data.id);
           localStorage.setItem('userName', response.data.name);
+          localStorage.setItem('expires_at', response.data.expires_at);
           router.push({ name: 'Tasks'});
         }
       })

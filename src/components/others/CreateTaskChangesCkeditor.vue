@@ -5,7 +5,7 @@
       :editor="editor"
       @ready="onEditorReady"
     ></ckeditor>
-    <div id="attachmentsDiv">
+    <div id="attachmentChangesDiv">
         <small style="font-size: 9pt;" v-show="countAttachments == 0">Nenhum arquivo anexado... Arraste e solte na descrição</small>
     </div>
   </div>
@@ -55,13 +55,13 @@ export default {
     },
   },
   watch: {
-    "task.description": {
+    "task.modification": {
       immediate: false,
       handler(newDescription) {
         if (this.editorData !== newDescription) {
           axios
             .get(
-              `${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments/attachments`, getAuthToken()
+              `${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments/modifications`, getAuthToken()
             )
             .then((response) => {
               if (response) {
@@ -72,8 +72,8 @@ export default {
                 var thumbnailSpan = [];
                 var redXAttachment = [];
                 for (let i = 0; i < this.attachmentFiles.length; i++) {
-                  var attachmentsDiv =
-                    document.getElementById("attachmentsDiv");
+                  var attachmentChangesDiv =
+                    document.getElementById("attachmentChangesDiv");
 
                   if (this.attachmentFiles[i].extension == "pdf") {
                     type[i] = "application/";
@@ -88,7 +88,7 @@ export default {
                   envolvedDiv[i].style.cursor = "pointer";
                   envolvedDiv[i].style.display = "inline-flex";
 
-                  attachmentsDiv.appendChild(envolvedDiv[i]);
+                  attachmentChangesDiv.appendChild(envolvedDiv[i]);
 
                   thumbnail[i] = document.createElement("embed");
                   thumbnail[i].id = "attachmentFileImg_" + i;
@@ -121,7 +121,7 @@ export default {
                   redXAttachment[i].style.position = "relative";
                   redXAttachment[i].style.top = "-140px";
                   redXAttachment[i].style.left = "-5px";
-                  attachmentsDiv.appendChild(redXAttachment[i]);
+                  attachmentChangesDiv.appendChild(redXAttachment[i]);
 
 
                   var taskId = this.task.id;
@@ -132,11 +132,11 @@ export default {
                     let redXfileToRemove = document.getElementById("redXAttachmentFile_" + i);
                     envolvedDiv[i].removeChild(eyeMiniatureToRemove);
                     envolvedDiv[i].removeChild(embedFileToRemove);
-                    attachmentsDiv.removeChild(redXfileToRemove);
-                    attachmentsDiv.removeChild(divFileToRemove);
+                    attachmentChangesDiv.removeChild(redXfileToRemove);
+                    attachmentChangesDiv.removeChild(divFileToRemove);
 
                     axios
-                    .delete(`${process.env.VUE_APP_API_DOMAIN}/task/${taskId}/deleteTaskAttachment/attachments/${i}`, getAuthToken())
+                    .delete(`${process.env.VUE_APP_API_DOMAIN}/task/${taskId}/deleteTaskAttachment/modifications/${i}`, getAuthToken())
                     .then((response) => {
                       console.log(response);
                     })
@@ -208,6 +208,7 @@ export default {
 
       editor.model.document.on("change:data", () => {
         this.content = editor.getData();
+        console.log(this.content);
         this.content = this.content.replaceAll('"', "'");
         this.$emit("get-data-editor", this.content);
       });
@@ -245,7 +246,7 @@ export default {
         envolvedDiv.style.margin = "10px";
         envolvedDiv.style.cursor = "pointer";
         envolvedDiv.style.display = "inline-flex";
-        attachmentsDiv.appendChild(envolvedDiv);
+        attachmentChangesDiv.appendChild(envolvedDiv);
 
         const thumbnail = document.createElement("embed");
         thumbnail.id = "embed_" + file.name;
@@ -274,7 +275,7 @@ export default {
         redXAttachment.style.position = "relative";
         redXAttachment.style.top = "-140px";
         redXAttachment.style.left = "-5px";
-        attachmentsDiv.appendChild(redXAttachment);
+        attachmentChangesDiv.appendChild(redXAttachment);
 
         envolvedDiv.onclick = function (e) {
           var element = envolvedDiv.getElementsByTagName("embed")[0];
@@ -294,9 +295,20 @@ export default {
           });
         };
 
+        redXAttachment.onclick = function () {
+          let divFileToRemove = document.getElementById("div_" + file.name);
+          let embedFileToRemove = document.getElementById("embed_" + file.name);
+          let eyeMiniatureToRemove = document.getElementById("i_" + file.name);
+          let redXfileToRemove = document.getElementById("delete_" + file.name);
+          divFileToRemove.removeChild(eyeMiniatureToRemove);
+          divFileToRemove.removeChild(embedFileToRemove);
+          attachmentChangesDiv.removeChild(redXfileToRemove);
+          attachmentChangesDiv.removeChild(divFileToRemove);
+          
+        }
+
         this.countAttachments++;
 
-        // console.dir(imageSrc);
       };
       reader.readAsDataURL(file);
     },
@@ -310,7 +322,7 @@ export default {
 </script>
 
 <style>
-#attachmentsDiv {
+#attachmentChangesDiv {
   margin: 10px 0px;
 }
 

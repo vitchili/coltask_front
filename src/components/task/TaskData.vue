@@ -42,13 +42,13 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
+import { getAuthToken } from '../../../middlewares/authMiddleware'; 
 
 export default {
   name: "TaskData",
   components: {},
   data() {
     return {
-      token: localStorage.getItem("authToken"),
       countAttachments: 0,
     };
   },
@@ -62,12 +62,6 @@ export default {
     span(description) {
       return `<div> ${description} </div>`;
     },
-
-    getHeaders() {
-      return {
-        headers: { Authorization: `Bearer ${this.token}` },
-      };
-    },
   },
   watch: {
     'task.description': {
@@ -75,7 +69,7 @@ export default {
       handler(newDescription) {
         if (this.editorData !== newDescription) {
           axios
-            .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments/attachments`, this.getHeaders())
+            .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments/attachments`, getAuthToken())
             .then((response) => {
               if (response) {
                 
