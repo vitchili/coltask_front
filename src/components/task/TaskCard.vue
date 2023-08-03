@@ -51,7 +51,6 @@ export default {
   name: "TaskCard",
   data() {
     return {
-      token: localStorage.getItem("authToken"),
       showCancelTaskAlert: false,
       cancelTaskAlertKey: 0,
       formattedCreatedAt: 0,

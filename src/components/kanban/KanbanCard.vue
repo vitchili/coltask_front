@@ -9,15 +9,17 @@
               <span class="custom-control-label fs-13">{{task.title}}</span>
             </label>
           </div>
-          <div class="d-block">
-            <span class="badge rounded-pill text-bg-secondary fs-9">Prazo: {{new Date(task.dead_line).getDate() + '/' + new Date(task.dead_line).getMonth() + '/' + new Date(task.dead_line).getFullYear()}}</span>
-          </div>
-          <div>
-              <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="user" class="avatar-img rounded-circle" style="width: 20px"/>
-              &nbsp;
-              <span class="text-body fs-12">&gt;</span>
-              &nbsp;
-              <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="user" class="avatar-img rounded-circle" style="width: 20px"/>
+          <div class="row">
+            <div class="col">
+                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="user" class="avatar-img rounded-circle" style="width: 15px"/>
+                &nbsp;
+                <span class="text-body fs-12">-</span>
+                &nbsp;
+                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="user" class="avatar-img rounded-circle" style="width: 15px"/>
+            </div>
+            <div class="col">
+              <span class="badge rounded-pill text-bg-secondary fs-9">Prazo: {{new Date(task.dead_line).getDate() + '/' + new Date(task.dead_line).getMonth() + '/' + new Date(task.dead_line).getFullYear()}}</span>
+            </div>
           </div>
         </div>
       </div>

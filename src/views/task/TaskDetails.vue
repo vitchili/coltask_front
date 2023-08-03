@@ -33,12 +33,12 @@ import TaskChanges from "@/components/task/TaskChanges.vue";
 import TaskTests from "@/components/task/TaskTests.vue";
 import TaskAdditional from "@/components/task/TaskAdditional.vue";
 import axios from "axios";
+import { getAuthToken } from '../../../middlewares/authMiddleware'; 
 
 export default {
   name: "TaskDetails",
   data(){
     return {
-      token: localStorage.getItem('authToken'),
       task: null
     };
   },
@@ -50,12 +50,8 @@ export default {
     TaskAdditional
   },
   mounted() {
-    const config = {
-      headers: { Authorization: `Bearer ${this.token}` },
-    };
-
     axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.$route.params.id}`, config)
+      .get(`${process.env.VUE_APP_API_DOMAIN}/task/${this.$route.params.id}`, getAuthToken())
       .then((response) => {
         if (response) {
           this.task = response.data.data;

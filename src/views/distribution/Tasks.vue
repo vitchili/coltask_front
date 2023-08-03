@@ -23,12 +23,12 @@ import TasksGraphics from '@/components/distribution/TasksGraphics.vue';
 import TasksForDistribution from "@/components/distribution/TasksForDistribution.vue";
 import Kanban from "@/components/distribution/Kanban.vue";
 import axios from "axios";
+import { getAuthToken } from '../../../middlewares/authMiddleware'; 
 
 export default {
   name: "Tasks",
   data(){
     return {
-      token: localStorage.getItem('authToken'),
       tasks: null
     };
   },
@@ -38,12 +38,8 @@ export default {
     Kanban,
   },
   mounted() {
-    const config = {
-      headers: { Authorization: `Bearer ${this.token}` },
-    };
-
     axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/tasks`, config)
+      .get(`${process.env.VUE_APP_API_DOMAIN}/tasks`, getAuthToken())
       .then((response) => {
         if (response) {
           this.tasks = response.data.data;

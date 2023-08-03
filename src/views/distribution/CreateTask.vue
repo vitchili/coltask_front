@@ -311,14 +311,12 @@ import CreateTaskDescriptionCkeditor from "../../components/others/CreateTaskDes
 import SweetAlertFormError from "../../components/alerts/SweetAlertFormError.vue";
 import router from "@/router";
 import axios from "axios";
+import { getAuthToken } from '../../../middlewares/authMiddleware'; 
 
 export default {
   name: "CreateTask",
   data() {
     return {
-      //Auth
-      token: localStorage.getItem("authToken"),
-
       //Get data API
       clients: {},
       directions: {},
@@ -352,12 +350,6 @@ export default {
     SweetAlertFormError,
   },
   methods: {
-    getHeaders() {
-      return {
-        headers: { Authorization: `Bearer ${this.token}` },
-      };
-    },
-
     save() {
       var data = {
         outside_requester: this.outside_requester,
@@ -377,7 +369,7 @@ export default {
 
       //Save data and create task
       axios
-        .post(`${process.env.VUE_APP_API_DOMAIN}/task`, data, this.getHeaders())
+        .post(`${process.env.VUE_APP_API_DOMAIN}/task`, data, getAuthToken())
         .then((response) => {
           if (response) {
             console.log(response);
@@ -403,7 +395,7 @@ export default {
         .post(
           `${process.env.VUE_APP_API_DOMAIN}/usersFilter`,
           { direction_id: e.target.value },
-          this.getHeaders()
+          getAuthToken()
         )
         .then((response) => {
           if (response) {
@@ -423,7 +415,7 @@ export default {
   mounted() {
     //Get Clients
     axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/clients`, this.getHeaders())
+      .get(`${process.env.VUE_APP_API_DOMAIN}/clients`, getAuthToken())
       .then((response) => {
         if (response) {
           this.clients = response.data.data;
@@ -435,7 +427,7 @@ export default {
 
     //Get Directions
     axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/directions`, this.getHeaders())
+      .get(`${process.env.VUE_APP_API_DOMAIN}/directions`, getAuthToken())
       .then((response) => {
         if (response) {
           this.directions = response.data.data;
@@ -447,7 +439,7 @@ export default {
 
     //Get Priorities
     axios
-      .get(`${process.env.VUE_APP_API_DOMAIN}/priorities`, this.getHeaders())
+      .get(`${process.env.VUE_APP_API_DOMAIN}/priorities`, getAuthToken())
       .then((response) => {
         if (response) {
           this.priorities = response.data.data;
@@ -462,7 +454,7 @@ export default {
       .post(
         `${process.env.VUE_APP_API_DOMAIN}/usersFilter`,
         { direction_id: 2 },
-        this.getHeaders()
+        getAuthToken()
       )
       .then((response) => {
         if (response) {
