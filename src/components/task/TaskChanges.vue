@@ -6,12 +6,29 @@
           <div class="header-content">
             <span class="general-title-card mt-1">Modificações</span>
             <div>
-              <router-link :to="'/task/new'">
-                <i
-                  class="fa-solid fa-bars card-options"
-                  style="color: #212529"
-                ></i>
-              </router-link>
+              <div class="dropdown">
+                <a
+                  class="dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style="color: #212529;"
+                >
+                  <i
+                    class="fa-solid fa-bars card-options"
+                    style="color: #212529;"
+                  >
+                  </i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a @click="evolveTask(9)" class="dropdown-item" href="#">Cancelar tarefa</a></li>
+                  <li><a @click="evolveTask(4)" class="dropdown-item" href="#">Enviar para teste</a></li>
+                  <li><a @click="evolveTask(8)" class="dropdown-item" href="#">Finalizar via suporte</a></li>
+                  <li><a @click="evolveTask(10)" class="dropdown-item" href="#">Inativar - Solicitar feedback</a></li>
+                  <li><a @click="evolveTask(11)" class="dropdown-item" href="#">Inativar - Outros motivos</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +95,7 @@
 import axios from "axios";
 import SweetAlertFormError from "../../components/alerts/SweetAlertFormError.vue";
 import CreateTaskChangesCkeditor from "@/components/others/CreateTaskChangesCkeditor.vue";
-import { getAuthToken } from '../../../middlewares/authMiddleware'; 
+import { getAuthToken } from "../../../middlewares/authMiddleware";
 
 export default {
   name: "TaskChanges",
@@ -118,7 +135,6 @@ export default {
         )
         .then((response) => {
           if (response) {
-            console.log("okay");
           }
         })
         .catch((error) => {
@@ -133,16 +149,19 @@ export default {
           this.countAlert++;
         });
     },
+    evolveTask(e){
+      console.log(e);
+    }
   },
   watch: {
-    "task": {
+    task: {
       immediate: false,
       handler(task) {
-         this.branch = task.branch;
+        this.branch = task.branch;
         this.modification = task.modification;
         this.link_merge_request = task.link_merge_request;
-      }
-    }
+      },
+    },
   },
   props: {
     task: {

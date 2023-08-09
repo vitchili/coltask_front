@@ -24,3 +24,7 @@ export function getAuthToken() {
     }
   return null;
 }
+
+export function getUserDirections(){
+  return $cookies.get('directions');
+}

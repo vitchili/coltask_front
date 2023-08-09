@@ -1,11 +1,11 @@
 <template>
-  <div id="app">
+  <div id="appCkEditorTest">
     <ckeditor
       v-model="editorData"
       :editor="editor"
       @ready="onEditorReady"
     ></ckeditor>
-    <div id="attachmentChangesDiv">
+    <div id="attachmentTestsDiv">
         <small style="font-size: 9pt;" v-show="countAttachments == 0">Nenhum arquivo anexado... Arraste e solte na descrição</small>
     </div>
   </div>
@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import { getAuthToken } from '../../../middlewares/authMiddleware'; 
 
 export default {
-  name: "app",
+  name: "appTest",
   components: {
     ckeditor: CKEditor.component,
   },
@@ -55,13 +55,13 @@ export default {
     },
   },
   watch: {
-    "task.modification": {
+    "task.test_ocorrency": {
       immediate: false,
       handler(newDescription) {
         if (this.editorData !== newDescription) {
           axios
             .get(
-              `${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments/modifications`, getAuthToken()
+              `${process.env.VUE_APP_API_DOMAIN}/task/${this.task.id}/getBase64Attachments/tests`, getAuthToken()
             )
             .then((response) => {
               if (response) {
@@ -72,8 +72,8 @@ export default {
                 var thumbnailSpan = [];
                 var redXAttachment = [];
                 for (let i = 0; i < this.attachmentFiles.length; i++) {
-                  var attachmentChangesDiv =
-                    document.getElementById("attachmentChangesDiv");
+                  var attachmentTestsDiv =
+                    document.getElementById("attachmentTestsDiv");
 
                   if (this.attachmentFiles[i].extension == "pdf") {
                     type[i] = "application/";
@@ -82,16 +82,16 @@ export default {
                   }
 
                   envolvedDiv[i] = document.createElement("div");
-                  envolvedDiv[i].id = "divAttachmentFileImg_" + i;
+                  envolvedDiv[i].id = "divAttachmentFileTestImg_" + i;
                   envolvedDiv[i].style.position = "relative";
                   envolvedDiv[i].style.margin = "10px";
                   envolvedDiv[i].style.cursor = "pointer";
                   envolvedDiv[i].style.display = "inline-flex";
 
-                  attachmentChangesDiv.appendChild(envolvedDiv[i]);
+                  attachmentTestsDiv.appendChild(envolvedDiv[i]);
 
                   thumbnail[i] = document.createElement("embed");
-                  thumbnail[i].id = "attachmentFileImg_" + i;
+                  thumbnail[i].id = "attachmentFileTestImg_" + i;
                   thumbnail[i].style.width = "150px";
                   thumbnail[i].style.height = "150px";
                   thumbnail[i].style.margin = "5px";
@@ -105,14 +105,14 @@ export default {
                   envolvedDiv[i].appendChild(thumbnail[i]);
 
                   thumbnailSpan[i] = document.createElement("i");
-                  thumbnailSpan[i].id = "attachmentFileSpan_" + i;
+                  thumbnailSpan[i].id = "attachmentFileTestSpan_" + i;
                   thumbnailSpan[i].style.color = "#585858";
                   thumbnailSpan[i].className = "fa-solid";
                   thumbnailSpan[i].classList.add("fa-eye");
                   envolvedDiv[i].appendChild(thumbnailSpan[i]);
 
                   redXAttachment[i] = document.createElement("i");
-                  redXAttachment[i].id = "redXAttachmentFile_" + i;
+                  redXAttachment[i].id = "redXAttachmentFileTest_" + i;
                   redXAttachment[i].className = "fa-solid";
                   redXAttachment[i].classList.add("fa-x");
                   redXAttachment[i].classList.add("fa-2xs");
@@ -121,22 +121,22 @@ export default {
                   redXAttachment[i].style.position = "relative";
                   redXAttachment[i].style.top = "-140px";
                   redXAttachment[i].style.left = "-5px";
-                  attachmentChangesDiv.appendChild(redXAttachment[i]);
+                  attachmentTestsDiv.appendChild(redXAttachment[i]);
 
 
                   var taskId = this.task.id;
                   redXAttachment[i].onclick = function () {
-                    let divFileToRemove = document.getElementById("divAttachmentFileImg_" + i);
-                    let embedFileToRemove = document.getElementById("attachmentFileImg_" + i);
-                    let eyeMiniatureToRemove = document.getElementById("attachmentFileSpan_" + i);
-                    let redXfileToRemove = document.getElementById("redXAttachmentFile_" + i);
+                    let divFileToRemove = document.getElementById("divAttachmentFileTestImg_" + i);
+                    let embedFileToRemove = document.getElementById("attachmentFileTestImg_" + i);
+                    let eyeMiniatureToRemove = document.getElementById("attachmentFileTestSpan_" + i);
+                    let redXfileToRemove = document.getElementById("redXAttachmentFileTest_" + i);
                     envolvedDiv[i].removeChild(eyeMiniatureToRemove);
                     envolvedDiv[i].removeChild(embedFileToRemove);
-                    attachmentChangesDiv.removeChild(redXfileToRemove);
-                    attachmentChangesDiv.removeChild(divFileToRemove);
+                    attachmentTestsDiv.removeChild(redXfileToRemove);
+                    attachmentTestsDiv.removeChild(divFileToRemove);
 
                     axios
-                    .delete(`${process.env.VUE_APP_API_DOMAIN}/task/${taskId}/deleteTaskAttachment/modifications/${i}`, getAuthToken())
+                    .delete(`${process.env.VUE_APP_API_DOMAIN}/task/${taskId}/deleteTaskAttachment/tests/${i}`, getAuthToken())
                     .then((response) => {
                       console.log(response);
                     })
@@ -186,8 +186,7 @@ export default {
   },
   methods: {
     onEditorReady(editor) {
-      const editorElement = document.querySelector("#app .ck-editor__editable");
-
+      const editorElement = document.querySelector("#appCkEditorTest .ck-editor__editable");
       editorElement.addEventListener("dragover", this.handleDragOver);
       editorElement.addEventListener(
         "drop",
@@ -235,15 +234,15 @@ export default {
         }
 
         const envolvedDiv = document.createElement("div");
-        envolvedDiv.id = "div_" + file.name;
+        envolvedDiv.id = "divTest_" + file.name;
         envolvedDiv.style.position = "relative";
         envolvedDiv.style.margin = "10px";
         envolvedDiv.style.cursor = "pointer";
         envolvedDiv.style.display = "inline-flex";
-        attachmentChangesDiv.appendChild(envolvedDiv);
+        attachmentTestsDiv.appendChild(envolvedDiv);
 
         const thumbnail = document.createElement("embed");
-        thumbnail.id = "embed_" + file.name;
+        thumbnail.id = "embedTest_" + file.name;
         thumbnail.className = "embeds";
         thumbnail.style.width = "150px";
         thumbnail.style.height = "150px";
@@ -253,14 +252,14 @@ export default {
         envolvedDiv.appendChild(thumbnail);
 
         const thumbnailSpan = document.createElement("i");
-        thumbnailSpan.id = "i_" + file.name;
+        thumbnailSpan.id = "iTest_" + file.name;
         thumbnailSpan.style.color = "#585858";
         thumbnailSpan.className = "fa-solid";
         thumbnailSpan.classList.add("fa-eye");
         envolvedDiv.appendChild(thumbnailSpan);
 
         const redXAttachment = document.createElement("i");
-        redXAttachment.id = "delete_" + file.name;
+        redXAttachment.id = "deleteTest_" + file.name;
         redXAttachment.className = "fa-solid";
         redXAttachment.classList.add("fa-x");
         redXAttachment.classList.add("fa-2xs");
@@ -269,7 +268,7 @@ export default {
         redXAttachment.style.position = "relative";
         redXAttachment.style.top = "-140px";
         redXAttachment.style.left = "-5px";
-        attachmentChangesDiv.appendChild(redXAttachment);
+        attachmentTestsDiv.appendChild(redXAttachment);
 
         envolvedDiv.onclick = function (e) {
           var element = envolvedDiv.getElementsByTagName("embed")[0];
@@ -290,14 +289,23 @@ export default {
         };
 
         redXAttachment.onclick = function () {
-          let divFileToRemove = document.getElementById("div_" + file.name);
-          let embedFileToRemove = document.getElementById("embed_" + file.name);
-          let eyeMiniatureToRemove = document.getElementById("i_" + file.name);
-          let redXfileToRemove = document.getElementById("delete_" + file.name);
+          let divFileToRemove = document.getElementById("divTest_" + file.name);
+          let embedFileToRemove = document.getElementById("embedTest_" + file.name);
+          let eyeMiniatureToRemove = document.getElementById("iTest_" + file.name);
+          let redXfileToRemove = document.getElementById("deleteTest_" + file.name);
           divFileToRemove.removeChild(eyeMiniatureToRemove);
           divFileToRemove.removeChild(embedFileToRemove);
-          attachmentChangesDiv.removeChild(redXfileToRemove);
-          attachmentChangesDiv.removeChild(divFileToRemove);
+          attachmentTestsDiv.removeChild(redXfileToRemove);
+          attachmentTestsDiv.removeChild(divFileToRemove);
+
+          axios
+          .delete(`${process.env.VUE_APP_API_DOMAIN}/task/${taskId}/deleteTaskAttachment/tests/${i}`, getAuthToken())
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
           
         }
 
@@ -316,7 +324,7 @@ export default {
 </script>
 
 <style>
-#attachmentChangesDiv {
+#attachmentTestsDiv {
   margin: 10px 0px;
 }
 

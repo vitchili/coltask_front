@@ -96,6 +96,7 @@ export default {
       .then(response => {
         if (response.data) {
           this.$cookies.set('token', response.data.token);
+          this.$cookies.set('directions', response.data.directions);
           localStorage.setItem('userId', response.data.id);
           localStorage.setItem('userName', response.data.name);
           localStorage.setItem('expires_at', response.data.expires_at);

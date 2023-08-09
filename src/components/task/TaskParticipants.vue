@@ -1,6 +1,6 @@
 <template>
-  <div class="content" style="height: 350px;">
-    <div class="card" style="height: 350px;">
+  <div class="content" style="max-height: 350px; overflow-y: scroll;">
+    <div class="card" style="max-height: 350px; overflow-y: scroll;">
       <div class="card-header" style="background-color: #57D0DF; color: #fff;">
         <div class="header-content">
           <span class="general-title-card mt-1">Informações</span>
